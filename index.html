@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mukesh Prasad – Backend Engineer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg: #1a1a2e;
+      --sidebar-w: 260px;
+      --accent: #0ea5e9;
+      --accent2: #6366f1;
+      --text-light: #e2e8f0;
+      --text-muted: #94a3b8;
+      --content-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --timeline-dot: #0ea5e9;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      background: var(--content-bg);
+      color: #1e293b;
+    }
+
+    .page-wrapper {
+      margin-left: var(--sidebar-w);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 24px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .profile-pic {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .profile-name {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .social-icons a {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      transition: color 0.2s;
+    }
+    .social-icons a:hover { color: var(--accent); }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+
+    nav { width: 100%; }
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+    }
+    nav a:hover, nav a.active {
+      background: rgba(14,165,233,0.15);
+      color: var(--accent);
+    }
+    nav a i { width: 18px; text-align: center; }
+
+    /* ─── MAIN CONTENT ─── */
+    .main {
+      flex: 1;
+      padding: 0;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 64px 60px;
+      width: 100%;
+    }
+
+    section:not(#home):nth-child(even) { background: #f1f5f9; }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .section-underline {
+      width: 50px; height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-bottom: 36px;
+    }
+
+    /* ─── HOME ─── */
+    #home {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+      padding: 0 !important;
+      height: 100vh;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .home-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('photo.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+
+    .home-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(5,5,15,0.75) 0%,
+        rgba(5,5,15,0.4) 55%,
+        rgba(5,5,15,0.05) 100%
+      );
+    }
+
+    .home-content {
+      position: relative;
+      z-index: 1;
+      padding: 0 56px 64px;
+    }
+
+    .home-name {
+      color: #fff;
+      font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.3s forwards;
+    }
+
+    .typed-container {
+      font-size: 1.25rem;
+      color: #fff;
+      min-height: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+    .typed-text { color: var(--accent); font-weight: 600; }
+    .cursor { display: inline-block; animation: blink 0.7s infinite; color: var(--accent); }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #0284c7; transform: translateY(-2px); }
+    .btn-outline { border: 2px solid var(--accent); color: var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: #fff; transform: translateY(-2px); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .about-img-wrap { position: relative; }
+    .about-img {
+      width: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .about-text p {
+      color: #475569;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .about-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .about-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .detail-row i { color: var(--accent); margin-top: 2px; flex-shrink: 0; }
+    .detail-row strong { color: #0f172a; }
+
+    /* ─── SKILLS ─── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .skill-category { margin-bottom: 28px; }
+    .skill-cat-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .skill-item { margin-bottom: 14px; }
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .skill-bar {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      padding: 5px 12px;
+      background: rgba(14,165,233,0.08);
+      color: var(--accent);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ─── RESUME ─── */
+    .resume-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .timeline-section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timeline-section-title i { color: var(--accent); }
+
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px; top: 8px; bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+
+    .timeline-item { position: relative; margin-bottom: 32px; }
+    .timeline-dot {
+      position: absolute;
+      left: -24px; top: 6px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .timeline-period {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .timeline-role {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+    .timeline-org {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.7;
+    }
+    .timeline-desc li { margin-bottom: 4px; margin-left: 16px; }
+
+    /* ─── PROJECTS ─── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    }
+
+    .project-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .project-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .project-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .project-tag {
+      padding: 3px 10px;
+      background: #f1f5f9;
+      color: #475569;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .project-links { display: flex; gap: 12px; }
+    .project-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .project-link:hover { text-decoration: underline; }
+
+    /* ─── DSA / LLD / HLD SHEETS ─── */
+    .sheet-section { }
+
+    .sheet-intro {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .sheet-intro-icon {
+      width: 50px; height: 50px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .sheet-intro p { font-size: 0.9rem; color: #64748b; margin-top: 4px; line-height: 1.6; }
+    .sheet-intro h3 { font-size: 1rem; font-weight: 700; color: #0f172a; }
+
+    .topics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    .topic-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(14,165,233,0.1);
+      transform: translateY(-2px);
+    }
+    .topic-num {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(14,165,233,0.08);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .topic-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #0f172a;
+    }
+    .topic-count {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .github-banner {
+      margin-top: 28px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .github-banner p { color: var(--text-muted); font-size: 0.9rem; }
+    .github-banner h3 { color: #fff; margin-bottom: 4px; }
+    .github-banner .btn { background: var(--accent); color: #fff; }
+
+    /* ─── CONTACT ─── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .contact-info { }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .contact-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      background: rgba(14,165,233,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 2px; }
+    .contact-value { font-weight: 600; color: #0f172a; font-size: 0.95rem; }
+    .contact-value a { color: inherit; text-decoration: none; }
+    .contact-value a:hover { color: var(--accent); }
+
+    .contact-form { }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #0f172a;
+      background: #fff;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { height: 120px; resize: vertical; }
+    .form-submit { width: 100%; padding: 13px; font-size: 0.95rem; cursor: pointer; border: none; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      background: #0f172a;
+      color: #64748b;
+    }
+
+    /* ─── SCROLL TO TOP ─── */
+    .scroll-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.4);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.2s;
+      z-index: 200;
+    }
+    .scroll-top.visible { opacity: 1; }
+    .scroll-top:hover { transform: scale(1.1); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .sidebar { width: 220px; }
+      .page-wrapper { margin-left: 220px; }
+      section { padding: 48px 32px; }
+      .about-grid, .resume-grid, .contact-grid { grid-template-columns: 1fr; }
+      .about-img { max-height: 360px; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .sidebar { position: relative; width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .page-wrapper { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <img src="photo.jpg" alt="Mukesh Prasad" class="profile-pic" onerror="this.src='https://ui-avatars.com/api/?name=Mukesh+Prasad&background=0ea5e9&color=fff&size=200'" />
+  <div class="profile-name">MUKESH PRASAD</div>
+  <div class="social-icons">
+    <a href="https://www.linkedin.com/in/mukeshprasadnitc/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com/mike22051995" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="https://leetcode.com/mukeshprasad" target="_blank" title="LeetCode"><i class="fas fa-code"></i></a>
+  </div>
+  <div class="divider"></div>
+  <nav>
+    <a href="#home" class="active"><i class="fas fa-home"></i> Home</a>
+    <a href="#about"><i class="fas fa-user"></i> About</a>
+    <a href="#resume"><i class="fas fa-file-alt"></i> Resume</a>
+    <a href="#projects"><i class="fas fa-folder-open"></i> Projects</a>
+    <a href="#dsa"><i class="fas fa-list-ol"></i> DSA Sheet</a>
+    <a href="#lld"><i class="fas fa-sitemap"></i> LLD Projects</a>
+    <a href="#hld"><i class="fas fa-project-diagram"></i> HLD</a>
+    <a href="#contact"><i class="fas fa-envelope"></i> Contact Me</a>
+  </nav>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<div class="page-wrapper">
+<main class="main">
+
+  <!-- HOME -->
+  <section id="home">
+    <div class="home-bg"></div>
+    <div class="home-content">
+      <h1 class="home-name">Mukesh Prasad</h1>
+      <div class="typed-container">
+        I'm <span class="typed-text" id="typed"></span><span class="cursor">|</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2 class="section-title">About</h2>
+    <div class="section-underline"></div>
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="photo.jpg" alt="Mukesh Prasad" class="about-img"
+          onerror="this.src='https://ui-avatars.com/api/?name=Mukesh+Prasad&background=0ea5e9&color=fff&size=400'" />
+      </div>
+      <div class="about-text">
+        <div class="about-title">Backend Engineer &amp; Software Developer</div>
+        <p style="margin-top:12px">
+          Backend Engineer with strong foundations in Python, C++, Data Structures &amp; Algorithms, and System Design.
+          Experienced in building RESTful services, database-driven applications, and distributed systems using FastAPI, PostgreSQL, and Redis.
+        </p>
+        <p>
+          B.Tech from NIT Calicut with engineering discipline applied to software architecture — designing systems for performance, reliability, and clean extensibility. Simultaneously served as Software Engineer and Senior Educator at Aakash Educational Services, building internal tooling and automation systems while mentoring 6,000+ students.
+        </p>
+        <p>Targeting Backend / SDE roles in Bangalore (20+ LPA).</p>
+
+        <div class="about-details">
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>Location:</strong> Bangalore, India</span></div>
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>Email:</strong> mukeshprasadnitc929@gmail.com</span></div>
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>Phone:</strong> +91 9995551107</span></div>
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>Degree:</strong> B.Tech, NIT Calicut</span></div>
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>LeetCode:</strong> 300+ problems solved</span></div>
+          <div class="detail-row"><i class="fas fa-chevron-right"></i><span><strong>Freelance:</strong> Available</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME / SKILLS -->
+  <section id="skills" style="min-height:auto; padding-bottom: 0;">
+    <h2 class="section-title">Skills</h2>
+    <div class="section-underline"></div>
+    <div class="skills-grid">
+      <div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Programming Languages</div>
+          <div class="skill-item">
+            <div class="skill-header"><span>Python</span><span>90%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>C++</span><span>85%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>SQL</span><span>80%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+          </div>
+        </div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Backend</div>
+          <div class="skill-item">
+            <div class="skill-header"><span>FastAPI / REST APIs</span><span>88%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>PostgreSQL / Redis</span><span>85%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>Docker / DevOps</span><span>75%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Agentic AI / LLM Systems</div>
+          <div class="skill-item">
+            <div class="skill-header"><span>CrewAI / AutoGen</span><span>82%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>OpenAI API / Tool Calling</span><span>85%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-header"><span>Multi-Agent Orchestration</span><span>78%</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+          </div>
+        </div>
+        <div class="skill-category">
+          <div class="skill-cat-title">Core CS / Tools</div>
+          <div class="tags">
+            <span class="tag">DSA</span>
+            <span class="tag">OOP</span>
+            <span class="tag">System Design</span>
+            <span class="tag">Concurrency</span>
+            <span class="tag">Kafka</span>
+            <span class="tag">RabbitMQ</span>
+            <span class="tag">Git</span>
+            <span class="tag">Linux</span>
+            <span class="tag">Async</span>
+            <span class="tag">SQLAlchemy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume">
+    <h2 class="section-title">Resume</h2>
+    <div class="section-underline"></div>
+    <div class="resume-grid">
+      <!-- Left: Education + Summary -->
+      <div>
+        <div class="timeline-section-title"><i class="fas fa-graduation-cap"></i> Education</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-period">2014 – 2018</div>
+            <div class="timeline-role">B.Tech — Mechanical Engineering</div>
+            <div class="timeline-org">National Institute of Technology (NIT), Calicut</div>
+            <div class="timeline-desc">CGPA: 7.92 / 10.00</div>
+          </div>
+        </div>
+
+        <div class="timeline-section-title" style="margin-top:36px"><i class="fas fa-trophy"></i> Achievements</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-role">LeetCode – 300+ Problems Solved</div>
+            <div class="timeline-desc">Consistent focus on graphs, DP, trees, and sliding window patterns across Easy / Medium / Hard difficulty.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-role">5 End-to-End Backend Projects</div>
+            <div class="timeline-desc">Independently built production-level backend and C++ systems demonstrating OOP, concurrency, caching, and distributed design.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-role">Mentored 6,000+ Students</div>
+            <div class="timeline-desc">Senior Educator at AESL mentoring 1,000+ students annually in analytical problem-solving and structured reasoning.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Work Experience -->
+      <div>
+        <div class="timeline-section-title"><i class="fas fa-briefcase"></i> Work Experience</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-period">Oct 2020 – Jul 2025</div>
+            <div class="timeline-role">Software Engineer (Backend) + Senior Educator</div>
+            <div class="timeline-org">Aakash Educational Services Ltd (AESL) · Bangalore</div>
+            <ul class="timeline-desc">
+              <li>Built internal Python automation tools to streamline student performance tracking, eliminating manual workflows for 10+ faculty members.</li>
+              <li>Developed data pipeline integrating academic data with PostgreSQL, reducing report generation time by ~70%.</li>
+              <li>Built automated email notification system (SMTP) dispatching alerts to 1,000+ students per batch.</li>
+              <li>Mentored 6,000+ students in algorithmic thinking and pattern recognition.</li>
+            </ul>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-period">Apr 2018 – Aug 2020</div>
+            <div class="timeline-role">Design Engineer</div>
+            <div class="timeline-org">Kia Motors (Kia Worldwide) · Chennai</div>
+            <ul class="timeline-desc">
+              <li>Contributed to design, simulation, and validation of suspension systems for Kia Seltos and Kia Sonet (500K+ combined annual units).</li>
+              <li>Applied structured engineering analysis to performance trade-offs — vehicle stability, ride comfort, and durability.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div class="section-underline"></div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-icon"><i class="fas fa-cloud-sun"></i></div>
+        <div class="project-name">Weather Alert &amp; Forecast Service</div>
+        <div class="project-desc">
+          Production-grade weather monitoring backend. Redis cache-first architecture reduced external API calls by ~80%, dropping response latency from ~400ms to under 50ms. Configurable alert rules with automated SMTP email notifications.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">FastAPI</span>
+          <span class="project-tag">PostgreSQL</span>
+          <span class="project-tag">Redis</span>
+          <span class="project-tag">RabbitMQ</span>
+          <span class="project-tag">Kafka</span>
+          <span class="project-tag">Docker</span>
+          <span class="project-tag">APScheduler</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/mike22051995/weather-alert-system" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon"><i class="fas fa-hotel"></i></div>
+        <div class="project-name">Hotel Booking System (Concurrency Control)</div>
+        <div class="project-desc">
+          Concurrent reservation system handling simultaneous booking requests without double-booking. Redis distributed locking and atomic compare-and-set operations. Booking lifecycle state machine: PENDING → CONFIRMED → CANCELLED.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">C++</span>
+          <span class="project-tag">Redis</span>
+          <span class="project-tag">Distributed Locking</span>
+          <span class="project-tag">OOP</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/mike22051995/lld-project" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon"><i class="fas fa-tachometer-alt"></i></div>
+        <div class="project-name">Distributed Rate Limiter</div>
+        <div class="project-desc">
+          Token Bucket-based rate limiter for distributed API throttling. Handles burst traffic, token refill intervals, and per-client rate limits using Redis atomic operations. Consistent enforcement across multiple service instances.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">C++</span>
+          <span class="project-tag">Redis</span>
+          <span class="project-tag">Token Bucket</span>
+          <span class="project-tag">Atomic Ops</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/mike22051995/lld-project" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon"><i class="fas fa-memory"></i></div>
+        <div class="project-name">Thread-Safe LRU Cache</div>
+        <div class="project-desc">
+          O(1) get/put LRU Cache using hashmap + doubly linked list. Mutex-based concurrency handling ensuring safe access under parallel workloads. Clean separation of cache policy from data structure internals.
+        </div>
+        <div class="project-tags">
+          <span class="project-tag">C++</span>
+          <span class="project-tag">STL</span>
+          <span class="project-tag">Mutex</span>
+          <span class="project-tag">HashMap</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/mike22051995/lld-project" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DSA SHEET -->
+  <section id="dsa">
+    <h2 class="section-title">DSA Sheet</h2>
+    <div class="section-underline"></div>
+
+    <div class="sheet-intro">
+      <div class="sheet-intro-icon"><i class="fas fa-list-ol"></i></div>
+      <div>
+        <h3>Data Structures &amp; Algorithms — Practice Sheet</h3>
+        <p>300+ problems solved on LeetCode. Organized by topic with patterns, approaches, and complexity analysis. Click any topic to view problems.</p>
+      </div>
+    </div>
+
+    <div class="topics-grid">
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/ARRAY" target="_blank">
+        <div class="topic-num">01</div>
+        <div><div class="topic-name">Arrays &amp; Strings</div><div class="topic-count">Sliding Window, Two Pointer</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/linked_list" target="_blank">
+        <div class="topic-num">02</div>
+        <div><div class="topic-name">Linked Lists</div><div class="topic-count">Fast/Slow Pointer, Reversal</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/Tree" target="_blank">
+        <div class="topic-num">03</div>
+        <div><div class="topic-name">Trees &amp; BST</div><div class="topic-count">DFS, BFS, Traversals</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/graph" target="_blank">
+        <div class="topic-num">04</div>
+        <div><div class="topic-name">Graphs</div><div class="topic-count">BFS, DFS, Dijkstra, Union-Find</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/DP" target="_blank">
+        <div class="topic-num">05</div>
+        <div><div class="topic-name">Dynamic Programming</div><div class="topic-count">1D/2D DP, Memoization</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/stack" target="_blank">
+        <div class="topic-num">06</div>
+        <div><div class="topic-name">Stack &amp; Queue</div><div class="topic-count">Monotonic Stack, Deque</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/binary_search" target="_blank">
+        <div class="topic-num">07</div>
+        <div><div class="topic-name">Binary Search</div><div class="topic-count">Search Space Reduction</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/heap" target="_blank">
+        <div class="topic-num">08</div>
+        <div><div class="topic-name">Heaps &amp; Priority Queue</div><div class="topic-count">Top-K, Merge K Lists</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/recursion" target="_blank">
+        <div class="topic-num">09</div>
+        <div><div class="topic-name">Backtracking &amp; Recursion</div><div class="topic-count">Permutations, Combinations</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/bitManipulation" target="_blank">
+        <div class="topic-num">10</div>
+        <div><div class="topic-name">Bit Manipulation</div><div class="topic-count">XOR tricks, Bit masking</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/SORTING" target="_blank">
+        <div class="topic-num">11</div>
+        <div><div class="topic-name">Sorting</div><div class="topic-count">Merge Sort, Quick Sort, Custom</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/MATRIX" target="_blank">
+        <div class="topic-num">12</div>
+        <div><div class="topic-name">Matrix</div><div class="topic-count">Spiral, Rotation, Search</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/greedy" target="_blank">
+        <div class="topic-num">13</div>
+        <div><div class="topic-name">Greedy</div><div class="topic-count">Interval, Activity Selection</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/two%20pointers" target="_blank">
+        <div class="topic-num">14</div>
+        <div><div class="topic-name">Two Pointers</div><div class="topic-count">Pair Sum, Trapping Rain</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/string" target="_blank">
+        <div class="topic-num">15</div>
+        <div><div class="topic-name">Strings</div><div class="topic-count">Anagram, Palindrome, KMP</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/DSA-SHEETS/tree/main/TOP_300_FAANG" target="_blank">
+        <div class="topic-num"><i class="fas fa-star" style="font-size:0.85rem"></i></div>
+        <div><div class="topic-name">Top 300 FAANG</div><div class="topic-count">Must-solve interview problems</div></div>
+      </a>
+    </div>
+
+    <div class="github-banner">
+      <div>
+        <h3>View Full DSA Repository</h3>
+        <p>All solutions with explanations, time &amp; space complexity on GitHub</p>
+      </div>
+      <a href="https://github.com/mike22051995/DSA-SHEETS" target="_blank" class="btn"><i class="fab fa-github"></i> Open on GitHub</a>
+    </div>
+  </section>
+
+  <!-- LLD PROJECTS -->
+  <section id="lld">
+    <h2 class="section-title">LLD Projects</h2>
+    <div class="section-underline"></div>
+
+    <div class="sheet-intro">
+      <div class="sheet-intro-icon"><i class="fas fa-sitemap"></i></div>
+      <div>
+        <h3>Low-Level Design Systems</h3>
+        <p>Object-oriented design systems built in C++ demonstrating Design Patterns (Singleton, State, Strategy, Observer, Factory) and SOLID principles.</p>
+      </div>
+    </div>
+
+    <div class="topics-grid">
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/HotelBookingSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-hotel" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Hotel Booking System</div><div class="topic-count">Concurrency Control, State Machine</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/RideSharingSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-car" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Ride Sharing System</div><div class="topic-count">Driver-Rider Matching, Dynamic Pricing</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/ATMSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-credit-card" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">ATM System</div><div class="topic-count">State Machine, Singleton Pattern</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/SocialMediaSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-users" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Social Media System</div><div class="topic-count">Follow Graph, Feed Generation</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/FoodDeliverySystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-utensils" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Food Delivery System</div><div class="topic-count">Order Lifecycle, OOP Design</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/OnlineShoppingSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-shopping-cart" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Online Shopping System</div><div class="topic-count">Cart, Orders, Inventory</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/LibraryManagementSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-book" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Library Management</div><div class="topic-count">Borrow/Return, Catalog</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/ElevatorSystem" target="_blank">
+        <div class="topic-num"><i class="fas fa-building" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Elevator System</div><div class="topic-count">Scheduling, State Machine</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/VendingMachine" target="_blank">
+        <div class="topic-num"><i class="fas fa-coffee" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Vending Machine</div><div class="topic-count">State Pattern, Payment Flow</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/SnakeAndLadder" target="_blank">
+        <div class="topic-num"><i class="fas fa-dice" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Snake &amp; Ladder</div><div class="topic-count">Game Design, OOP</div></div>
+      </a>
+      <a class="topic-card" href="https://github.com/mike22051995/lld-project/tree/main/OOPSInterviewConcepts" target="_blank">
+        <div class="topic-num"><i class="fas fa-code" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">OOPS Interview Concepts</div><div class="topic-count">Patterns, Principles, Design</div></div>
+      </a>
+    </div>
+
+    <div class="github-banner">
+      <div>
+        <h3>View LLD Repository on GitHub</h3>
+        <p>Full source code with class diagrams and design pattern explanations</p>
+      </div>
+      <a href="https://github.com/mike22051995/lld-project" target="_blank" class="btn"><i class="fab fa-github"></i> Open on GitHub</a>
+    </div>
+  </section>
+
+  <!-- HLD -->
+  <section id="hld">
+    <h2 class="section-title">High-Level Design (HLD)</h2>
+    <div class="section-underline"></div>
+
+    <div class="sheet-intro">
+      <div class="sheet-intro-icon"><i class="fas fa-project-diagram"></i></div>
+      <div>
+        <h3>System Design Notes &amp; Case Studies</h3>
+        <p>Deep dives into distributed systems architecture — covering scalability, availability, consistency, and real-world trade-off decisions.</p>
+      </div>
+    </div>
+
+    <div class="topics-grid">
+      <a class="topic-card" href="hld/url-shortener.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-link" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">URL Shortener</div><div class="topic-count">Hashing, Load Balancing, Caching</div></div>
+      </a>
+      <a class="topic-card" href="hld/rate-limiting.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-tachometer-alt" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Rate Limiting Service</div><div class="topic-count">Distributed, Token Bucket, Redis</div></div>
+      </a>
+      <a class="topic-card" href="hld/notification-system.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-bell" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Notification System</div><div class="topic-count">Kafka, Push/Email/SMS</div></div>
+      </a>
+      <a class="topic-card" href="hld/database-design.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-database" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Database Design Patterns</div><div class="topic-count">Sharding, Replication, CAP</div></div>
+      </a>
+      <a class="topic-card" href="hld/caching.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-bolt" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Caching Strategies</div><div class="topic-count">Redis, CDN, Cache Invalidation</div></div>
+      </a>
+      <a class="topic-card" href="hld/message-queue.md" target="_blank">
+        <div class="topic-num"><i class="fas fa-stream" style="font-size:0.9rem"></i></div>
+        <div><div class="topic-name">Message Queues</div><div class="topic-count">Kafka, RabbitMQ, Pub/Sub</div></div>
+      </a>
+    </div>
+
+    <div class="github-banner">
+      <div>
+        <h3>View HLD Notes on GitHub</h3>
+        <p>Architecture diagrams, capacity estimation, and trade-off analysis</p>
+      </div>
+      <a href="https://github.com/mike22051995" target="_blank" class="btn"><i class="fab fa-github"></i> Open on GitHub</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2 class="section-title">Contact Me</h2>
+    <div class="section-underline"></div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <div class="contact-label">Location</div>
+            <div class="contact-value">Bangalore, India</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value"><a href="mailto:mukeshprasadnitc929@gmail.com">mukeshprasadnitc929@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fas fa-phone"></i></div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value"><a href="tel:+919995551107">+91 9995551107</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+          <div>
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value"><a href="https://www.linkedin.com/in/mukeshprasadnitc/" target="_blank">linkedin.com/in/mukesh-prasad-nitc</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon"><i class="fab fa-github"></i></div>
+          <div>
+            <div class="contact-label">GitHub</div>
+            <div class="contact-value"><a href="https://github.com/mike22051995" target="_blank">github.com/mukeshprasad</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <form onsubmit="handleForm(event)">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="John Doe" required />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" placeholder="Job Opportunity / Collaboration" required />
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="Write your message here..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2025 Mukesh Prasad · Backend Engineer · Bangalore, India</p>
+</footer>
+</div><!-- end page-wrapper -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+  // ── Typed animation ──
+  const roles = ['Backend Engineer', 'Python Developer', 'C++ Systems Developer', 'Agentic AI Builder', 'System Design Enthusiast'];
+  let ri = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typed');
+
+  function type() {
+    const word = roles[ri];
+    if (!deleting) {
+      el.textContent = word.substring(0, ++ci);
+      if (ci === word.length) { deleting = true; setTimeout(type, 1800); return; }
+    } else {
+      el.textContent = word.substring(0, --ci);
+      if (ci === 0) { deleting = false; ri = (ri + 1) % roles.length; }
+    }
+    setTimeout(type, deleting ? 60 : 100);
+  }
+  type();
+
+  // ── Active nav on scroll ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const link = document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.35 });
+
+  sections.forEach(s => observer.observe(s));
+
+  // ── Skill bar animation ──
+  const skillObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('section').forEach(s => skillObs.observe(s));
+
+  // ── Scroll to top button ──
+  const scrollBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 300);
+  });
+
+  // ── Contact form ──
+  function handleForm(e) {
+    e.preventDefault();
+    alert('Thanks for your message! I\'ll get back to you soon.');
+    e.target.reset();
+  }
+</script>
+</body>
+</html>
